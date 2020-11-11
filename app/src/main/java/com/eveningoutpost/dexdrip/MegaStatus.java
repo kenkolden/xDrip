@@ -54,6 +54,10 @@ import com.eveningoutpost.dexdrip.utils.ActivityWithMenu;
 import com.eveningoutpost.dexdrip.utils.DexCollectionType;
 import com.eveningoutpost.dexdrip.watch.lefun.LeFunEntry;
 import com.eveningoutpost.dexdrip.watch.lefun.LeFunService;
+import com.eveningoutpost.dexdrip.watch.miband.MiBandEntry;
+import com.eveningoutpost.dexdrip.watch.miband.MiBandService;
+import com.eveningoutpost.dexdrip.watch.thinjam.BlueJayEntry;
+import com.eveningoutpost.dexdrip.watch.thinjam.BlueJayService;
 import com.eveningoutpost.dexdrip.wearintegration.WatchUpdaterService;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -111,9 +115,12 @@ public class MegaStatus extends ActivityWithMenu {
     private static final String XDRIP_PLUS_SYNC = "Followers";
     private static final String UPLOADERS = "Uploaders";
     private static final String LEFUN_STATUS = "Lefun";
+    private static final String MIBAND_STATUS = "MiBand";
+    private static final String BLUEJAY_STATUS = "BlueJay";
     private static final String INPEN_STATUS = "InPen";
     private static final String NIGHTSCOUT_FOLLOW = "Nightscout Follow";
     private static final String SHARE_FOLLOW = "Dex Share Follow";
+    private static final String XDRIP_LIBRE2 = "Libre2";
 
     public static PendingIntent getStatusPendingIntent(String section_name) {
         final Intent intent = new Intent(xdrip.getAppContext(), MegaStatus.class);
@@ -144,6 +151,12 @@ public class MegaStatus extends ActivityWithMenu {
             } else if (dexCollectionType.equals(Medtrum)) {
                 addAsection(MEDTRUM_STATUS, "Medtrum A6 Status");
             }
+            if (BlueJayEntry.isEnabled()) {
+                addAsection(BLUEJAY_STATUS, "BlueJay Watch Status");
+            }
+            if (DexCollectionType.getDexCollectionType() == DexCollectionType.LibreReceiver) {
+                addAsection(XDRIP_LIBRE2, "Libre 2 Patched App Status");
+            }
             if (DexCollectionType.hasWifi()) {
                 addAsection(IP_COLLECTOR, dexCollectionType == DexCollectionType.Mock ? "FAKE / MOCK DATA SOURCE" : "Wifi Wixel / Parakeet Status");
             }
@@ -161,6 +174,9 @@ public class MegaStatus extends ActivityWithMenu {
             }
             if (LeFunEntry.isEnabled()) {
                 addAsection(LEFUN_STATUS, "Lefun Watch Status");
+            }
+            if (MiBandEntry.isEnabled()) {
+                addAsection(MIBAND_STATUS, "MiBand Watch Status");
             }
             if(dexCollectionType.equals(NSFollow)) {
                 addAsection(NIGHTSCOUT_FOLLOW, "Nightscout Follow Status");
@@ -213,6 +229,12 @@ public class MegaStatus extends ActivityWithMenu {
             case LEFUN_STATUS:
                 la.addRows(LeFunService.megaStatus());
                 break;
+            case MIBAND_STATUS:
+                la.addRows(MiBandService.megaStatus());
+                break;
+            case BLUEJAY_STATUS:
+                la.addRows(BlueJayService.megaStatus());
+                break;
             case INPEN_STATUS:
                 la.addRows(InPenService.megaStatus());
                 break;
@@ -221,6 +243,9 @@ public class MegaStatus extends ActivityWithMenu {
                 break;
             case SHARE_FOLLOW:
                 la.addRows(ShareFollowService.megaStatus());
+                break;
+            case XDRIP_LIBRE2:
+                la.addRows(LibreReceiver.megaStatus());
                 break;
         }
         la.changed();
